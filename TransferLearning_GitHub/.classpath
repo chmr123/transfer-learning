@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/home/mingrui/Desktop/Transfer Learning/stanford-corenlp-full-2015-04-20/stanford-corenlp-3.5.2.jar"/>
+	<classpathentry kind="lib" path="/home/mingrui/Desktop/Transfer Learning/stanford-corenlp-full-2015-04-20/stanford-corenlp-3.5.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="/home/mingrui/Desktop/Transfer Learning/opencsv-3.5.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/mingrui/Desktop/Transfer Learning/libsvm-3.20/java/libsvm.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
