@@ -164,6 +164,7 @@ public class Instances {
 		for(String key : alltextUpdated.keySet()){
 			if(key.equals(selectedKey)){
 				String[] value = alltextUpdated.get(key);
+				value[0] = category + "_false";
 				value[1] = "train";
 				alltextUpdated.put(key, value);
 			}
