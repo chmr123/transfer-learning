@@ -103,7 +103,7 @@ public class Instances {
 	}
 
 	
-	public Map<String, Double> getPredictedProbability(Map<String, String[]> alltext) throws IOException{
+	public Map<String, Double> getPredictedProbability(Map<String, String[]> alltext, String categoty) throws IOException{
 		ArrayList<String> test_instances = new ArrayList<String>();
 		for(String key : alltext.keySet()){
 			if(alltext.get(key)[1].equals("test")){
@@ -111,7 +111,7 @@ public class Instances {
 			}
 		}
 		Map<String, Double> predictedProbability = new LinkedHashMap<String, Double>();
-		File output = new File("probability");
+		File output = new File(categoty + ".probability");
 		BufferedReader br = new BufferedReader(new FileReader(output));
 		String line;
 		int index = 0;
@@ -132,7 +132,7 @@ public class Instances {
 		return predictedProbability;
 	}
 	
-	public Map<String, Integer> getPredictedLabels(Map<String, String[]> alltext) throws NumberFormatException, IOException{
+	public Map<String, Integer> getPredictedLabels(Map<String, String[]> alltext, String categoty) throws NumberFormatException, IOException{
 		ArrayList<String> test_instances = new ArrayList<String>();
 		for(String key : alltext.keySet()){
 			if(alltext.get(key)[1].equals("test")){
@@ -140,7 +140,7 @@ public class Instances {
 			}
 		}
 		Map<String, Integer> predictedLables = new LinkedHashMap<String, Integer>();
-		File output = new File("probability");
+		File output = new File(categoty + ".probability");
 		BufferedReader br = new BufferedReader(new FileReader(output));
 		String line;
 		int index = 0;
@@ -194,9 +194,9 @@ public class Instances {
 	private void writeInstanceToFile(int[] vector, String flag, String type, String category) throws IOException {
 		FileWriter fw = null;
 		if (type.equals("train"))
-			fw = new FileWriter("training" + "_" + category+".data", true);
+			fw = new FileWriter("training." + category, true);
 		if (type.equals("test"))
-			fw = new FileWriter("testing" + "_" + category+".data", true);
+			fw = new FileWriter("testing." + category, true);
 		fw.write(flag + " ");
 
 		for (int i = 1; i <= vector.length; i++) {

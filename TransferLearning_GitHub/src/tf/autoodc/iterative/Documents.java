@@ -28,8 +28,6 @@ public class Documents {
 	}
 
 	public Map<String, String[]> getTextFromFile(String[] files, String training, String testing) throws IOException {
-		String trainingfile = files[0];
-		String testingfile = files[1];
 		Map<String, String[]> alltext = new LinkedHashMap<String, String[]>();
 		for (String filename : files) {
 			//System.out.println("Working on dataset " + filename);

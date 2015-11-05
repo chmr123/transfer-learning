@@ -9,7 +9,7 @@ import java.util.Map;
 
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
-public class AutoODCTF_ITERATIVE {
+public class AutoODCTF_ITERATIVE_SELF {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String category = "";
@@ -37,7 +37,9 @@ public class AutoODCTF_ITERATIVE {
 		//MaxentTagger tagger = new MaxentTagger("taggers/english-left3words-distsim.tagger");
 		Documents doc = new Documents();
 		Instances ins = new Instances();
-		String[] files = {"filezilla.csv","prismstream.csv"};
+		String[] files = new String[2];
+		files[0] = training;
+		files[1] = testing;
 		Map<String,String[]> alltext = doc.getTextFromFile(files,training,testing);
 		Map<String,String[]> alltextOriginal = doc.getTextFromFile(files,training,testing);
 		
@@ -64,9 +66,9 @@ public class AutoODCTF_ITERATIVE {
 				svm_iteration(c);//Iterative learning
 				
 				//Create a map to store the probabilities the SVM classifier output on the test data in each iteration
-				Map<String, Double> predictedProbabilityMap = ins.getPredictedProbability(alltext);
+				Map<String, Double> predictedProbabilityMap = ins.getPredictedProbability(alltext,c);
 				//Create a map to store the labels the SVM classifier predicted on the test data in each iteration
-				Map<String, Integer> predictedLabelsMap = ins.getPredictedLabels(alltext);
+				Map<String, Integer> predictedLabelsMap = ins.getPredictedLabels(alltext,c);
 				//The selected instance with highest probability
 				String selectedKey = ins.selectInstanceHighest(predictedProbabilityMap);
 				//The predicted label of the selected instance above
@@ -96,16 +98,16 @@ public class AutoODCTF_ITERATIVE {
 	
 	private static void svm_iteration(String category) throws IOException, InterruptedException{
 		//Train a prediction model
-		ProcessBuilder pr1 = new ProcessBuilder("./svm-train", "-q","-c","10000","-b","1","training_"+ category + ".data","model");
-        pr1.directory(new File("/home/mingrui/Desktop/Transfer Learning/AutoODC"));
+		ProcessBuilder pr1 = new ProcessBuilder("./svm-train", "-q","-c","10000","-b","1","training."+ category,category+".model");
+        pr1.directory(new File("."));
 		//pr1.directory(new File("C:\\Users\\install\\Desktop\\TransferLearning\\autoodc"));
 		//pr1.directory(new File("/users5/csegrad/mingruic/transferlearning"));
 		Process p = pr1.start();
 		p.waitFor();
 	
 		//Test a prediction model
-		ProcessBuilder pr2 = new ProcessBuilder("./svm-predict","-q","-b","1","testing_"+ category + ".data","model","probability");
-		pr2.directory(new File("/home/mingrui/Desktop/Transfer Learning/AutoODC"));
+		ProcessBuilder pr2 = new ProcessBuilder("./svm-predict","-q","-b","1","testing."+ category,category+".model",category+".probability");
+		pr2.directory(new File("."));
         //pr2.directory(new File("C:\\Users\\install\\Desktop\\TransferLearning\\autoodc"));
 		//pr2.directory(new File("/users5/csegrad/mingruic/transferlearning"));
 		
@@ -115,7 +117,7 @@ public class AutoODCTF_ITERATIVE {
 		//Removing temp training and testing data files
 		File folder = new File(".");
 		for (File f : folder.listFiles()) {
-		    if (f.getName().endsWith(".data")) {
+		    if (f.getName().endsWith("."+category)) {
 		        f.delete(); // may fail mysteriously - returns boolean you may want to check
 		    }
 		}
