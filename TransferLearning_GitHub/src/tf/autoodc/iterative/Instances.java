@@ -159,12 +159,17 @@ public class Instances {
 		return predictedLables;
 	}
 	
-	public Map<String, String[]> updateAllText(Map<String, String[]> alltext, String selectedKey,ArrayList<String> dictionary, String category) throws IOException{
+	public Map<String, String[]> updateAllText(Map<String, String[]> alltext, String selectedKey,int selectedLabel, ArrayList<String> dictionary, String category) throws IOException{
 		Map<String, String[]> alltextUpdated = alltext;
 		for(String key : alltextUpdated.keySet()){
 			if(key.equals(selectedKey)){
 				String[] value = alltextUpdated.get(key);
-				value[0] = category + "_false";
+				//System.out.println("change label");
+				if(selectedLabel == 1)
+					value[0] = category;
+				else{
+					value[0] = category + "_false";
+				}
 				value[1] = "train";
 				alltextUpdated.put(key, value);
 			}

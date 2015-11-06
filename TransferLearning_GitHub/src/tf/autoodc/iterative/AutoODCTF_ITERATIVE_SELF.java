@@ -80,7 +80,7 @@ public class AutoODCTF_ITERATIVE_SELF {
 				/*Update "alltext" map after converting the selected testing instance (with highest probability) to training instance, 
 				  whereThe label of selected instance is changed to "train" from "test".
 				*/
-				alltext = ins.updateAllText(alltext, selectedKey, dictionary, c);
+				alltext = ins.updateAllText(alltext, selectedKey, selectedLabel,dictionary, c);
 				//Generate training and testing files again
 				ins.generateTrainingFile(dictionary, alltext, c);
 				ins.generateTestingFile(dictionary, alltext, c);
