@@ -70,17 +70,47 @@ public class AutoODCTF_ITERATIVE_SELF {
 				//Create a map to store the labels the SVM classifier predicted on the test data in each iteration
 				Map<String, Integer> predictedLabelsMap = ins.getPredictedLabels(alltext,c);
 				//The selected instance with highest probability
-				String selectedKey = ins.selectInstanceHighest(predictedProbabilityMap);
+				String[] selectedKey_type = ins.selectInstanceHighest(predictedProbabilityMap);
+				int selectedLabel = 0;
+				if(selectedKey_type[1].equals("keep")) {
+					System.out.println("Skip adding");
+					selectedLabel = predictedLabelsMap.get(selectedKey_type[0]);
+					alltext = ins.updateAllTextNoSelection(alltext, selectedKey_type[0], selectedLabel,dictionary, c);
+				}
+				
+				if(selectedKey_type[1].equals("add")) {
+					selectedLabel = predictedLabelsMap.get(selectedKey_type[0]);	
+					System.out.println("adding instance " + selectedLabel);
+					alltext = ins.updateAllText(alltext, selectedKey_type[0], selectedLabel,dictionary, c);
+					if(selectedLabel == 1) positive++;
+					if(selectedLabel == -1) negative++;
+						//alltext = ins.updateAllTextNoSelection(alltext, selectedKey_type[0], selectedLabel,dictionary, c);			
+				}
+				
+				/*if(selectedKey_type[1].equals("add")) {
+					selectedLabel = predictedLabelsMap.get(selectedKey_type[0]);	
+					if(selectedLabel == 1){
+						System.out.println("adding instance " + selectedLabel);
+						alltext = ins.updateAllText(alltext, selectedKey_type[0], selectedLabel,dictionary, c);
+					}
+					else{
+						System.out.println("Skip adding");
+						alltext = ins.updateAllTextNoSelection(alltext, selectedKey_type[0], selectedLabel,dictionary, c);	
+					}
+					if(selectedLabel == 1) positive++;
+					if(selectedLabel == -1) negative++;
+							
+				}*/
+				
 				//The predicted label of the selected instance above
-				int selectedLabel = predictedLabelsMap.get(selectedKey);
-				if(selectedLabel == 1) positive++;
-				if(selectedLabel == -1) negative++;
+				//int selectedLabel = predictedLabelsMap.get(selectedKey);
+				
 				//Add the selected instance to the final prediction
-				finalPredictionLabels.put(selectedKey, selectedLabel);
+				finalPredictionLabels.put(selectedKey_type[0], selectedLabel);
 				/*Update "alltext" map after converting the selected testing instance (with highest probability) to training instance, 
 				  whereThe label of selected instance is changed to "train" from "test".
 				*/
-				alltext = ins.updateAllText(alltext, selectedKey, selectedLabel,dictionary, c);
+				//alltext = ins.updateAllText(alltext, selectedKey, selectedLabel,dictionary, c);
 				//Generate training and testing files again
 				ins.generateTrainingFile(dictionary, alltext, c);
 				ins.generateTestingFile(dictionary, alltext, c);
@@ -97,30 +127,28 @@ public class AutoODCTF_ITERATIVE_SELF {
 	}
 	
 	private static void svm_iteration(String category) throws IOException, InterruptedException{
+		//Removing temp training and testing data files
+		
+		
 		//Train a prediction model
 		ProcessBuilder pr1 = new ProcessBuilder("./svm-train", "-q","-c","10000","-b","1","training."+ category,category+".model");
         pr1.directory(new File("."));
-		//pr1.directory(new File("C:\\Users\\install\\Desktop\\TransferLearning\\autoodc"));
-		//pr1.directory(new File("/users5/csegrad/mingruic/transferlearning"));
 		Process p = pr1.start();
 		p.waitFor();
 	
 		//Test a prediction model
 		ProcessBuilder pr2 = new ProcessBuilder("./svm-predict","-q","-b","1","testing."+ category,category+".model",category+".probability");
 		pr2.directory(new File("."));
-        //pr2.directory(new File("C:\\Users\\install\\Desktop\\TransferLearning\\autoodc"));
-		//pr2.directory(new File("/users5/csegrad/mingruic/transferlearning"));
-		
 		p = pr2.start();
 		p.waitFor();	
 		
-		//Removing temp training and testing data files
 		File folder = new File(".");
 		for (File f : folder.listFiles()) {
-		    if (f.getName().endsWith("."+category)) {
+		    if (f.getName().endsWith("."+category) ) {
 		        f.delete(); // may fail mysteriously - returns boolean you may want to check
 		    }
 		}
+		
 	}
 	
 	private static void evaluate(Map<String, String[]> alltextOriginal, Map<String, Integer> finalPrediction, String category){

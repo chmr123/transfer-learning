@@ -177,14 +177,38 @@ public class Instances {
 		return alltextUpdated;
 	}
 	
-	public String selectInstanceHighest(Map<String, Double> test_instances){
-		double maxProbability = Collections.max(test_instances.values());
-		for(Entry<String, Double> entry : test_instances.entrySet()){
-			if(entry.getValue() == maxProbability){
-				return entry.getKey();
+	public Map<String, String[]> updateAllTextNoSelection(Map<String, String[]> alltext, String selectedKey,int selectedLabel, ArrayList<String> dictionary, String category) throws IOException{
+		Map<String, String[]> alltextUpdated = alltext;
+		for(String key : alltextUpdated.keySet()){
+			if(key.equals(selectedKey)){
+				String[] value = alltextUpdated.get(key);
+				//System.out.println("change label");
+				if(selectedLabel == 1)
+					value[0] = category;
+				else{
+					value[0] = category + "_false";
+				}
+				value[1] = "none";
+				alltextUpdated.put(key, value);
 			}
 		}
-		return null;
+		return alltextUpdated;
+	}
+	
+	public String[] selectInstanceHighest(Map<String, Double> test_instances){
+		double maxProbability = Collections.max(test_instances.values());
+		String[] type = new String[2];
+		for(Entry<String, Double> entry : test_instances.entrySet()){
+			if(entry.getValue() == maxProbability && maxProbability >= 0.6){
+				type[0] = entry.getKey();
+				type[1] = "add";
+			}
+			if(entry.getValue() == maxProbability && maxProbability < 0.6){
+				type[0] = entry.getKey();
+				type[1] = "keep";
+			}
+		}
+		return type;
 	}
 	
 	public int getTestDataSize(Map<String, String[]> alltext){
