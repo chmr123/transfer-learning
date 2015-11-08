@@ -9,7 +9,7 @@ import java.util.Map;
 
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
-public class AutoODCTF_ITERATIVE_SELF {
+public class AutoODCTF_ITERATIVE {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		String category = "";
